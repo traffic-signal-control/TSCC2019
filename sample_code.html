@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
+
   <head>
+  	<link href="css/prism.css" rel="stylesheet" />
     <title>TSCC 2019 &mdash; Traffic Signal Control Competition 2019</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -26,6 +28,7 @@
     
   </head>
   <body>
+  	<script src="js/prism.js"></script>
   
   <div class="site-wrap">
 
@@ -102,10 +105,12 @@
         In the sample code, we implement two baseline methods: Self-organizing traffic light (SOTL) and reinforcement learning. </p>
 
           <p>You can run SOTL using the following command:</p>
-          <pre><code class="lang-bash">python3 run_sotl<span class="hljs-selector-class">.py</span> --scenario <span class="hljs-string">"hangzhou_bc_tyc_1h_7_8_1848"</span>
+          <pre><code class="lang-bash">
+python3 run_sotl.py --scenario "hangzhou_bc_tyc_1h_7_8_1848"
           </code></pre>
           <p>You can run a basic reinforcement learning code using the following command:</p>
-          <pre><code class="lang-bash">python3 run_rl<span class="hljs-selector-class">.py</span> --scenario <span class="hljs-string">"hangzhou_bc_tyc_1h_7_8_1848"</span>
+          <pre><code class="lang-bash">
+python3 run_rl.py --scenario "hangzhou_bc_tyc_1h_7_8_1848"
           </code></pre>
 
           <h3 id="1-preliminary">1 Preliminary</h3>
@@ -116,14 +121,16 @@
             <li><strong>Lane</strong>: Each road can be divided into one or multiple lanes, indexed by 0, 1, ... from the inner lane to the outter lane. Lane_id = road<em>id</em>{i}, where i is the lane index.</li>
             <li><strong>Roadlink (road id - road id)</strong>: A roadlink is defined as the traffic moving from one start road towards another end road. Roadlinks are contained in the list of intersection[&quot;roadLinks&quot;]. Each roadlink is stored in a dictionary like:</li>
           </ul>
-          <pre><code class="lang-python">road_link = {<span class="hljs-string">"type"</span>:..., <span class="hljs-string">"startRoad"</span>:..., <span class="hljs-string">"endRoad"</span>:...,
-                     <span class="hljs-string">"direction"</span>:..., <span class="hljs-string">"laneLinks"</span>:...}
+          <pre><code class="lang-python">
+road_link = {"type":..., "startRoad":..., "endRoad":...,
+                     "direction":..., "laneLinks":...}
           </code></pre>
 
           <ul>
           <li><strong>Lanelink</strong>: A roadlink consists of several lanelinks. The dictionary of lanelink is like:</li>
           </ul>
-          <pre><code class="lang-python">lane_link = {<span class="hljs-string">"startLaneIndex"</span>:..., <span class="hljs-string">"endLaneIndex"</span>:..., <span class="hljs-string">"points"</span>:...}
+          <pre><code class="lang-python">
+lane_link = {"startLaneIndex":..., "endLaneIndex":..., "points":...}
           </code></pre>
           <p>The part of points are the geometric points to define the lane physical positions. &quot;startLaneIndex&quot; means the lane index of the start road while &quot;endLaneIndex&quot; is the lane index of the end road.</p>
 
@@ -136,22 +143,24 @@
 
           <p>In the <a href="https://github.com/zxsRambo/competition/blob/master/cityflow_env.py">cityflow_env.py</a>, a class of the cityflow environment is provided. There is a function to get the state features of the environment.</p>
 
-          <pre><code class="lang-python">def get_state(<span class="hljs-literal">self</span>):
-              <span class="hljs-keyword">state</span> = {
-              <span class="hljs-comment"># {lane_id: lane_count, ...}</span>
-              <span class="hljs-keyword">state</span>['lane_vehicle_count'] = <span class="hljs-literal">self</span>.eng.get_lane_vehicle_count() 
-              <span class="hljs-comment"># {lane_id: lane_waiting_count, ...} </span>
-              <span class="hljs-keyword">state</span>['lane_waiting_vehicle_count'] = <span class="hljs-literal">self</span>.eng.get_lane_waiting_vehicle_count()  
-              <span class="hljs-comment"># {lane_id: [vehicle1_id, vehicle2_id, ...], ...}</span>
-              <span class="hljs-keyword">state</span>['lane_vehicles'] = <span class="hljs-literal">self</span>.eng.get_lane_vehicles() 
-              <span class="hljs-comment"># {vehicle_id: vehicle_speed, ...} </span>
-              <span class="hljs-keyword">state</span>['vehicle_speed'] = <span class="hljs-literal">self</span>.eng.get_vehicle_speed()  
-              <span class="hljs-comment"># {vehicle_id: distance, ...}</span>
-              <span class="hljs-keyword">state</span>['vehicle_distance'] = <span class="hljs-literal">self</span>.eng.get_vehicle_distance() 
-              <span class="hljs-keyword">state</span>['current_time'] = <span class="hljs-literal">self</span>.eng.get_current_time()
-              <span class="hljs-keyword">state</span>['current_phase'] = <span class="hljs-literal">self</span>.current_phase
-              <span class="hljs-keyword">state</span>['current_phase_time'] = <span class="hljs-literal">self</span>.current_phase_time
-              return <span class="hljs-keyword">state</span>
+
+          <pre><code class="lang-python">
+def get_state(self):
+	state = {
+	# {lane_id: lane_count, ...}
+	state['lane_vehicle_count'] = self.eng.get_lane_vehicle_count() 
+	# {lane_id: lane_waiting_count, ...} 
+	state['lane_waiting_vehicle_count'] = self.eng.get_lane_waiting_vehicle_count()  
+	# {lane_id: [vehicle1_id, vehicle2_id, ...], ...}
+	state['lane_vehicles'] = self.eng.get_lane_vehicles() 
+	# {vehicle_id: vehicle_speed, ...} 
+	state['vehicle_speed'] = self.eng.get_vehicle_speed()  
+	# {vehicle_id: distance, ...}
+	state['vehicle_distance'] = self.eng.get_vehicle_distance() 
+	state['current_time'] = self.eng.get_current_time()
+	state['current_phase'] = self.current_phase
+	state['current_phase_time'] = self.current_phase_time
+	return state
           </code></pre>
 
 
@@ -161,75 +170,80 @@
 
           <p>The first step is to read the roadnet json file into a dictionary with the intersection_id as the key and the details of this intersection as the value.</p>
 
-          <pre><code class="lang-python">roadnet = json.<span class="hljs-keyword">load</span>(<span class="hljs-keyword">open</span>(roadnetFile))
+          <pre><code class="lang-python">
+roadnet = json.load(open(roadnetFile))
           </code></pre>
 
           <p>Then we process each intersection respectively. </p>
-          <pre><code class="lang-python">lane_phase_info_dict = {}
-          for intersection in roadnet[<span class="hljs-string">"intersections"</span>]:
-              if intersection[<span class="hljs-string">'virtual'</span>]:
-                  continue
-              lane_phase_info_dict[intersection[<span class="hljs-string">'id'</span>]] = {
-                                  <span class="hljs-string">"start_lane"</span>: [],
-                                  <span class="hljs-string">"end_lane"</span>: [],
-                                  <span class="hljs-string">"phase"</span>: [],
-                                  <span class="hljs-string">"phase_startLane_mapping"</span>: {},
-                                  <span class="hljs-string">"phase_roadLink_mapping"</span>: {}
-                                  }
+          <pre><code class="lang-python">
+lane_phase_info_dict = {}
+for intersection in roadnet["intersections"]:
+    if intersection['virtual']:
+        continue
+    lane_phase_info_dict[intersection['id']] = {
+                        "start_lane": [],
+                        "end_lane": [],
+                        "phase": [],
+                        "phase_startLane_mapping": {},
+                        "phase_roadLink_mapping": {}
+                        }
           </code></pre>
 
           <p>For an intersection, we record the mapping in a dictionary. Note that only non-virtual intersections are controlled by the traffic signal.</p>
 
           <p>You can traverse the list of intersection[&quot;roadLinks&quot;] and then the list of road_link[&quot;laneLinks&quot;] to record the roadLink_lane_pair, showing which lane pairs form a roadlink.</p>
 
-          <pre><code class="lang-python">road_links = intersection[<span class="hljs-string">"roadLinks"</span>]
-          start_lane = []
-          end_lane = []
-          # roadLink includes some lane_pair: (start_lane, end_lane)
-          roadLink_lane_pair = {<span class="hljs-keyword">ri</span>: [] <span class="hljs-keyword">for</span> <span class="hljs-keyword">ri</span> in
-                                <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(road_links))}  
+          <pre><code class="lang-python">
+road_links = intersection["roadLinks"]
+start_lane = []
+end_lane = []
+# roadLink includes some lane_pair: (start_lane, end_lane)
+roadLink_lane_pair = {ri: [] for ri in
+                      range(len(road_links))}  
 
-          <span class="hljs-keyword">for</span> <span class="hljs-keyword">ri</span> in <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(road_links)):
-              road_link = road_links[<span class="hljs-keyword">ri</span>]
-              <span class="hljs-keyword">for</span> lane_link in road_link[<span class="hljs-string">"laneLinks"</span>]:
-                  <span class="hljs-keyword">sl</span> = road_link[<span class="hljs-string">'startRoad'</span>] + <span class="hljs-string">"_"</span> + str(lane_link[<span class="hljs-string">"startLaneIndex"</span>])
-                  <span class="hljs-keyword">el</span> = road_link[<span class="hljs-string">'endRoad'</span>] + <span class="hljs-string">"_"</span> + str(lane_link[<span class="hljs-string">"endLaneIndex"</span>])
-                  start_lane.<span class="hljs-keyword">append</span>(<span class="hljs-keyword">sl</span>)
-                  end_lane.<span class="hljs-keyword">append</span>(<span class="hljs-keyword">el</span>)
-                  roadLink_lane_pair[<span class="hljs-keyword">ri</span>].<span class="hljs-keyword">append</span>((<span class="hljs-keyword">sl</span>, <span class="hljs-keyword">el</span>))
+for ri in range(len(road_links)):
+    road_link = road_links[ri]
+    for lane_link in road_link["laneLinks"]:
+        sl = road_link['startRoad'] + "_" + str(lane_link["startLaneIndex"])
+        el = road_link['endRoad'] + "_" + str(lane_link["endLaneIndex"])
+        start_lane.append(sl)
+        end_lane.append(el)
+        roadLink_lane_pair[ri].append((sl, el))
 
-          lane_phase_info_dict[intersection[<span class="hljs-string">'id'</span>]][<span class="hljs-string">"start_lane"</span>] = sorted(<span class="hljs-keyword">list</span>(<span class="hljs-keyword">set</span>(start_lane)))
-          lane_phase_info_dict[intersection[<span class="hljs-string">'id'</span>]][<span class="hljs-string">"end_lane"</span>] = sorted(<span class="hljs-keyword">list</span>(<span class="hljs-keyword">set</span>(end_lane)))
+lane_phase_info_dict[intersection['id']]["start_lane"] = sorted(list(set(start_lane)))
+lane_phase_info_dict[intersection['id']]["end_lane"] = sorted(list(set(end_lane)))
           </code></pre>
 
           <p>Finally, we can figure out the mapping from lanes to a phase.</p>
 
-          <pre><code class="lang-python">for phase_i in range(<span class="hljs-number">1</span>, len(intersection[<span class="hljs-string">"trafficLight"</span>][<span class="hljs-string">"lightphases"</span>])):
-              p = intersection[<span class="hljs-string">"trafficLight"</span>][<span class="hljs-string">"lightphases"</span>][phase_i]
-              lane_pair = []
-              start_lane = []
-              for ri in p[<span class="hljs-string">"availableRoadLinks"</span>]:
-                  lane_pair.extend(roadLink_lane_pair[ri])
-                  if roadLink_lane_pair[ri][<span class="hljs-number">0</span>][<span class="hljs-number">0</span>] not in start_lane:
-                      start_lane.append(roadLink_lane_pair[ri][<span class="hljs-number">0</span>][<span class="hljs-number">0</span>])
-              lane_phase_info_dict[intersection[<span class="hljs-string">'id'</span>]][<span class="hljs-string">"phase"</span>].append(phase_i)
-              lane_phase_info_dict[intersection[<span class="hljs-string">'id'</span>]][<span class="hljs-string">"phase_startLane_mapping"</span>][phase_i] = start_lane
-              lane_phase_info_dict[intersection[<span class="hljs-string">'id'</span>]][<span class="hljs-string">"phase_roadLink_mapping"</span>][phase_i] = lane_pair
+          <pre><code class="lang-python">
+for phase_i in range(1, len(intersection["trafficLight"]["lightphases"])):
+    p = intersection["trafficLight"]["lightphases"][phase_i]
+    lane_pair = []
+    start_lane = []
+    for ri in p["availableRoadLinks"]:
+        lane_pair.extend(roadLink_lane_pair[ri])
+        if roadLink_lane_pair[ri][0][0] not in start_lane:
+            start_lane.append(roadLink_lane_pair[ri][0][0])
+    lane_phase_info_dict[intersection['id']]["phase"].append(phase_i)
+    lane_phase_info_dict[intersection['id']]["phase_startLane_mapping"][phase_i] = start_lane
+    lane_phase_info_dict[intersection['id']]["phase_roadLink_mapping"][phase_i] = lane_pair
           </code></pre>
 
           <p>The information of phases is stored in the list of intersection[&quot;trafficLight&quot;][&quot;lightphases&quot;] which is listed below. The index of the list represents a phase. Note that the phase #0 is ignored since it serves as the yellow signal and it is not controlled by the algorithm. </p>
 
-          <pre><code><span class="hljs-string">"lightphases"</span>: [
-            {<span class="hljs-string">"time"</span>: <span class="hljs-number">5</span>, <span class="hljs-string">"availableRoadLinks"</span>: []},
-            {<span class="hljs-string">"time"</span>: <span class="hljs-number">30</span>, <span class="hljs-string">"availableRoadLinks"</span>: [<span class="hljs-number">0</span>, <span class="hljs-number">4</span>]},
-            {<span class="hljs-string">"time"</span>: <span class="hljs-number">30</span>, <span class="hljs-string">"availableRoadLinks"</span>: [<span class="hljs-number">2</span>, <span class="hljs-number">7</span>]},
-            {<span class="hljs-string">"time"</span>: <span class="hljs-number">30</span>, <span class="hljs-string">"availableRoadLinks"</span>: [<span class="hljs-number">1</span>, <span class="hljs-number">5</span>]},
-            {<span class="hljs-string">"time"</span>: <span class="hljs-number">30</span>, <span class="hljs-string">"availableRoadLinks"</span>: [<span class="hljs-number">3</span>, <span class="hljs-number">6</span>]},
-            {<span class="hljs-string">"time"</span>: <span class="hljs-number">30</span>, <span class="hljs-string">"availableRoadLinks"</span>: [<span class="hljs-number">0</span>, <span class="hljs-number">1</span>]},
-            {<span class="hljs-string">"time"</span>: <span class="hljs-number">30</span>, <span class="hljs-string">"availableRoadLinks"</span>: [<span class="hljs-number">4</span>, <span class="hljs-number">5</span>]},
-            {<span class="hljs-string">"time"</span>: <span class="hljs-number">30</span>, <span class="hljs-string">"availableRoadLinks"</span>: [<span class="hljs-number">2</span>, <span class="hljs-number">3</span>]},
-            {<span class="hljs-string">"time"</span>: <span class="hljs-number">30</span>, <span class="hljs-string">"availableRoadLinks"</span>: [<span class="hljs-number">6</span>, <span class="hljs-number">7</span>]},
-            ]
+          <pre><code><span class="hljs-string">
+"lightphases": [
+  {"time": 5, "availableRoadLinks": []},
+  {"time": 30, "availableRoadLinks": [0, 4]},
+  {"time": 30, "availableRoadLinks": [2, 7]},
+  {"time": 30, "availableRoadLinks": [1, 5]},
+  {"time": 30, "availableRoadLinks": [3, 6]},
+  {"time": 30, "availableRoadLinks": [0, 1]},
+  {"time": 30, "availableRoadLinks": [4, 5]},
+  {"time": 30, "availableRoadLinks": [2, 3]},
+  {"time": 30, "availableRoadLinks": [6, 7]},
+  ]
           </code></pre>
 
           <p>Each phase contains a certain number of roadlinks so given available roadlinks, lanes of the phase can be known through roadLink_lane_pair.</p>
@@ -237,15 +251,16 @@
         <h4 id="3-1-sotl-method">3.1 SOTL method</h4>
 
           <p>As for the SOTL(run_sotl.py), it is a simple adaptive method for traffic signal control.</p>
-          <pre><code class="lang-python">def choose_action(<span class="hljs-literal">self</span>, <span class="hljs-keyword">state</span>):
-              cur_phase = <span class="hljs-keyword">state</span>[<span class="hljs-string">"current_phase"</span>]
-              print(<span class="hljs-string">"Time: {}, Phase: {}"</span>.format(<span class="hljs-keyword">state</span>['current_time'], cur_phase))
-              if <span class="hljs-keyword">state</span>[<span class="hljs-string">"current_phase_time"</span>] &gt;= <span class="hljs-literal">self</span>.phi:
-                  num_green_vehicle = sum([<span class="hljs-keyword">state</span>[<span class="hljs-string">"lane_waiting_vehicle_count"</span>][i] <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-literal">self</span>.phase_startLane_mapping[cur_phase]])
-                  num_red_vehicle = sum([<span class="hljs-keyword">state</span>[<span class="hljs-string">"lane_waiting_vehicle_count"</span>][i] <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-literal">self</span>.lane_phase_info[<span class="hljs-literal">self</span>.intersection_id][<span class="hljs-string">"start_lane"</span>]]) - num_green_vehicle
-                  if num_green_vehicle <span class="hljs-variable">&lt;= self.min_green_vehicle and num_red_vehicle &gt;</span> <span class="hljs-literal">self</span>.max_red_vehicle:
-                      <span class="hljs-literal">self</span>.action = cur_phase % len(<span class="hljs-literal">self</span>.phase_list) + <span class="hljs-number">1</span>
-              return <span class="hljs-literal">self</span>.action
+          <pre><code class="lang-python">
+def choose_action(self, state):
+    cur_phase = state["current_phase"]
+    print("Time: {}, Phase: {}".format(state['current_time'], cur_phase))
+    if state["current_phase_time"] >= self.phi:
+        num_green_vehicle = sum([state["lane_waiting_vehicle_count"][i] for i in self.phase_startLane_mapping[cur_phase]])
+        num_red_vehicle = sum([state["lane_waiting_vehicle_count"][i] for i in self.lane_phase_info[self.intersection_id]["start_lane"]]) - num_green_vehicle
+        if num_green_vehicle <= self.min_green_vehicle and num_red_vehicle > self.max_red_vehicle:
+            self.action = cur_phase % len(self.phase_list) + 1
+    return self.action
           </code></pre>
 
           <p>There are some pre-defined parameters, <em>minimum green time</em> phi, <em>minimum waiting vehicles</em> <em>on the lanes with a green signal</em>, and <em>the threshold of waiting vehicles on the lanes with a red signal</em>. When the following three conditions are satisfied, the phase will be set to the next one.
@@ -264,28 +279,29 @@
           <li>model: DQN with 2 hidden layers</li>
           </ul>
           <p>The following code segement illustrates these four definitions in the sample code.</p>
-          <pre><code class="lang-python"><span class="hljs-comment"># state definition in run_rl.py</span>
-          <span class="hljs-keyword">state</span> = env.get_state()
-          <span class="hljs-keyword">state</span> = np.array(list(<span class="hljs-keyword">state</span>['start_lane_vehicle_count'].values()) + [<span class="hljs-keyword">state</span>['current_phase']]) <span class="hljs-comment"># a sample state definition</span>
-          <span class="hljs-keyword">state</span> = np.reshape(<span class="hljs-keyword">state</span>, [<span class="hljs-number">1</span>, state_size])
+          <pre><code class="lang-python">
+# state definition in run_rl.py
+state = env.get_state()
+state = np.array(list(state['start_lane_vehicle_count'].values()) + [state['current_phase']]) # a sample state definition
+state = np.reshape(state, [1, state_size])
 
-          <span class="hljs-comment"># action definition in run_rl.py</span>
-          action = phase_list[agent.choose_action(<span class="hljs-keyword">state</span>)]
+# action definition in run_rl.py
+action = phase_list[agent.choose_action(state)]
 
-          <span class="hljs-comment"># reward defined in CityFlow_env.py</span>
-          reward = env.get_reward() 
-          '''
-          def get_reward():
-             lane_waiting_vehicle_count = <span class="hljs-literal">self</span>.eng.get_lane_waiting_vehicle_count()
-            reward = -<span class="hljs-number">1</span> * sum(list(lane_waiting_vehicle_count.values())) 
-            return reward
-          '''
+# reward defined in CityFlow_env.py
+reward = env.get_reward() 
+'''
+def get_reward():
+   lane_waiting_vehicle_count = self.eng.get_lane_waiting_vehicle_count()
+  reward = -1 * sum(list(lane_waiting_vehicle_count.values())) 
+  return reward
+'''
 
-          <span class="hljs-comment"># model network defined in dqn_agent.py</span>
-          model = Sequential()
-          model.add(Dense(<span class="hljs-number">40</span>, input_dim=<span class="hljs-literal">self</span>.state_size, activation='relu'))
-          model.add(Dense(<span class="hljs-number">40</span>, activation='relu'))
-          model.add(Dense(<span class="hljs-literal">self</span>.action_size, activation='linear'))
+# model network defined in dqn_agent.py
+model = Sequential()
+model.add(Dense(40, input_dim=self.state_size, activation='relu'))
+model.add(Dense(40, activation='relu'))
+model.add(Dense(self.action_size, activation='linear'))
           </code></pre>
 
           <p>Please note that this reinforcement learning algorithm is just for your reference and you may need to redesign more suitable rl algorithm, including network structure, state definition, reward function and so on.</p>
@@ -296,31 +312,33 @@
 
       <p>In cityflow_env.py, the step function in the cityflow_env class controls the simulator to carry out an action. And then the phase is set through the function <strong><em>self.eng.set_tl_phase(<em>*</em></em></strong>self.intersection_id<strong>**</strong>, self.current_phase)<em>*</em>. Two paramters of set_tl_phase are the intersection_id and phase_id.</p>
 
-      <pre><code class="lang-python"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">step</span><span class="hljs-params">(<span class="hljs-keyword">self</span>, next_phase)</span></span>:
-          <span class="hljs-keyword">if</span> <span class="hljs-keyword">self</span>.current_phase == <span class="hljs-symbol">next_phase:</span>
-              <span class="hljs-keyword">self</span>.current_phase_time += <span class="hljs-number">1</span>
-          <span class="hljs-symbol">else:</span>
-              <span class="hljs-keyword">self</span>.current_phase = next_phase
-              <span class="hljs-keyword">self</span>.current_phase_time = <span class="hljs-number">1</span>
+      <pre><code class="lang-python">
+def step(self, next_phase):
+    if self.current_phase == next_phase:
+        self.current_phase_time += 1
+    else:
+        self.current_phase = next_phase
+        self.current_phase_time = 1
 
-          <span class="hljs-keyword">self</span>.eng.set_tl_phase(<span class="hljs-keyword">self</span>.intersection_id, <span class="hljs-keyword">self</span>.current_phase)
-          <span class="hljs-keyword">self</span>.eng.next_step()
-          <span class="hljs-keyword">self</span>.phase_log.append(<span class="hljs-keyword">self</span>.current_phase)
+    self.eng.set_tl_phase(self.intersection_id, self.current_phase)
+    self.eng.next_step()
+    self.phase_log.append(self.current_phase)
       </code></pre>
 
 
       <h3 id="5-record-your-traffic-signal-plan">5 Record your traffic signal plan</h3>
       <p>Everytime when you finish controlling, the traffic signal plan can be recorded by runing &#39;env.log()&#39;, like in the &#39;run_sotl.py&#39; and &#39;run_rl.py&#39;. </p>
 
-      <pre><code class="lang-python"># defined <span class="hljs-keyword">in</span> CityFlow_env.py
-      env.log()
-      <span class="hljs-string">'''</span>
-      def log(<span class="hljs-keyword">self</span>):
-          df = pd.DataFrame({<span class="hljs-keyword">self</span>.intersection_id: <span class="hljs-keyword">self</span>.phase_log[:<span class="hljs-keyword">self</span>.num_step]})
-          <span class="hljs-keyword">if</span> not os.path.exists(<span class="hljs-keyword">self</span>.config[<span class="hljs-symbol">'data</span>']):
-              os.makedirs(<span class="hljs-keyword">self</span>.config[<span class="hljs-symbol">'data</span>'])
-          df.to_csv(os.path.join(<span class="hljs-keyword">self</span>.config[<span class="hljs-symbol">'data</span>'], <span class="hljs-symbol">'signal_plan</span>.txt'), index=<span class="hljs-literal">None</span>
-      <span class="hljs-string">'''</span>
+      <pre><code class="lang-python">
+# defined in CityFlow_env.py
+env.log()
+'''
+def log(self):
+    df = pd.DataFrame({self.intersection_id: self.phase_log[:self.num_step]})
+    if not os.path.exists(self.config['data']):
+        os.makedirs(self.config['data'])
+    df.to_csv(os.path.join(self.config['data'], 'signal_plan.txt'), index=None
+'''
       </code></pre>
 
       </div>

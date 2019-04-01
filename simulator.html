@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <link href="css/prism.css" rel="stylesheet" />
+
     <title>TSCC 2019 &mdash; Traffic Signal Control Competition 2019</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -26,6 +28,7 @@
     
   </head>
   <body>
+    <script src="js/prism.js"></script>
   
   <div class="site-wrap">
 
@@ -110,107 +113,120 @@
         <p><strong>Option 1. Use the default docker image.</strong> One basic image has been built in advance, which sets up the environment for CityFlow, Tensorflow and Keras.</p>
         <p>You can pull this image from DockerHub to your computer by the following command:</p>
 
-        <pre><code class="lang-bash">docker pull tscc2050/competition
-        docker <span class="hljs-keyword">tag</span> <span class="hljs-title">tscc2050</span>/competition competition
+        <pre><code class="lang-bash">
+docker pull tscc2050/competition
+docker tag tscc2050/competition competition
         </code></pre>
         <p>Or, you can download the image from Google Drive （<a href="https://drive.google.com/file/d/1A9Q4Mj2GS6vhizKWHS0DKZkiXeBnn5_9/view?usp=sharing）">https://drive.google.com/file/d/1A9Q4Mj2GS6vhizKWHS0DKZkiXeBnn5_9/view?usp=sharing</a>) or
         Baidu Yun（<a href="https://pan.baidu.com/s/1DZkO_rtsWm0hvs4y8y55qw）">https://pan.baidu.com/s/1DZkO_rtsWm0hvs4y8y55qw</a>) and load this image by:</p>
-        <pre><code class="lang-bash">docker <span class="hljs-built_in">load</span> <span class="hljs-comment">--input competition.tar</span>
+        <pre><code class="lang-bash">
+docker load --input competition.tar
         </code></pre>
 
         <p><strong>Option 2. Build your own docker image using dockerfile.</strong> The original dockerfile is provided and the images can be built from scratch. The guide to build such an image is as follows. You need to run the following command in ./Docker/ . The dockerfile is placed in the folder of ./Docker/</p>
-        <pre><code class="lang-bash">docker build -t competition -f competition<span class="hljs-selector-class">.dockerfile</span> --rm context/
+        <pre><code class="lang-bash">
+docker build -t competition -f competition.dockerfile --rm context/
         </code></pre>
 
         <h4 id="2-2-check-the-environment">2.2 Check the environment</h4>
-        <pre><code class="lang-bash">docker <span class="hljs-built_in">run</span> -<span class="hljs-keyword">it</span> <span class="hljs-comment">--rm -v local_absolute_path:/competition -w /competition competition /bin/bash</span>
+        <pre><code class="lang-bash">
+docker run -it --rm -v local_absolute_path:/competition -w /competition competition /bin/bash
         </code></pre>
         <p>The command above will build a docker container, where the <strong>local absolute directory</strong> of your project is mounted to a contrainner. If you want to run the code, please remember to start a container and run the code inside the container.</p>
         <p>When the image is successfully built in the system, you can check whether the environment is set up correctly by the following commands:</p>
-        <pre><code class="lang-bash">python3 -c <span class="hljs-string">"import engine"</span> <span class="hljs-meta"># success <span class="hljs-meta-keyword">if</span> no <span class="hljs-meta-keyword">error</span></span>
+        <pre><code class="lang-bash">
+python3 -c "import engine" # success if no error
         </code></pre>
 
 
         <h3 id="3-run-simulator-with-the-default-signal-plan">3 Run simulator with the default signal plan</h3>
         <p>You can first run the simulator using the default signal plan which is defined in the road network file. The command is:</p>
-        <pre><code class="lang-bash">python3 run_default_plan<span class="hljs-selector-class">.py</span> --scenario <span class="hljs-string">"hangzhou_bc_tyc_1h_7_8_1848"</span>
+        <pre><code class="lang-bash">
+python3 run_default_plan.py --scenario "hangzhou_bc_tyc_1h_7_8_1848"
         </code></pre>
         <p>In run_default_plan.py, the main code segment is shown below, where the simulator (Engine) takes road netwrok and traffic data as input and operates the default signal plan.</p>
-        <pre><code class="lang-python"><span class="hljs-keyword">args</span> = parse_arguments()
-        num_step = <span class="hljs-keyword">args</span>.num_step
-        eng = engine.Engine(sim_setting_default[<span class="hljs-string">"interval"</span>],
-                        sim_setting_default[<span class="hljs-string">"threadNum"</span>],
-                        sim_setting_default[<span class="hljs-string">"saveReplay"</span>],
-                        sim_setting_default[<span class="hljs-string">"rlTrafficLight"</span>],
-                        sim_setting_default[<span class="hljs-string">"changeLane"</span>])
-        roadnetFile = <span class="hljs-string">"data/{}/roadnet.json"</span>.<span class="hljs-keyword">format</span>(<span class="hljs-keyword">args</span>.scenario)
-        flowFile = <span class="hljs-string">"data/{}/flow.json"</span>.<span class="hljs-keyword">format</span>(<span class="hljs-keyword">args</span>.scenario)
-        eng.load_roadnet(roadnetFile)
-        eng.load_flow(flowFile)
+        <pre><code class="lang-python">
+args = parse_arguments()
+num_step = args.num_step
+eng = engine.Engine(sim_setting_default["interval"],
+                    sim_setting_default["threadNum"],
+                    sim_setting_default["saveReplay"],
+                    sim_setting_default["rlTrafficLight"],
+                    sim_setting_default["changeLane"])
+roadnetFile = "data/{}/roadnet.json".format(args.scenario)
+flowFile = "data/{}/flow.json".format(args.scenario)
+eng.load_roadnet(roadnetFile)
+eng.load_flow(flowFile)
 
-        <span class="hljs-keyword">for</span> step <span class="hljs-keyword">in</span> <span class="hljs-keyword">range</span>(num_step):
-        eng.next_step()
-        eng.get_...()
-        ...
+for step in range(num_step):
+    eng.next_step()
+    eng.get_...()
+    ...
         </code></pre>
 
 
         <h3 id="4-run-the-simulator-by-reading-a-signal-plan-from-file">4 Run the simulator by reading a signal plan from file</h3>
         <p>You can run the simulator by reading a traffic signal plan from the file. The command is:</p>
-        <pre><code class="lang-bash">python3 run_signal_plan<span class="hljs-selector-class">.py</span> --scenario <span class="hljs-string">"hangzhou_bc_tyc_1h_7_8_1848"</span>
+        <pre><code class="lang-bash">
+python3 run_signal_plan.py --scenario "hangzhou_bc_tyc_1h_7_8_1848"
         </code></pre>
         <p>&quot;hangzhou_bc_tyc_1h_7_8_1848&quot; is a folder name, which includes three files: road network file, traffic flow file, and a traffic signal plan.</p>
         <p>In the signal plan file, the first row is a header indicating the intersection name, seperated by &#39;\t&#39;. Following that, each line is one second, and each column is the selected phase for that corresponding intersection. A special phase number 0 indicating yellow light when switching from one phase to another. a mandatory 5-second yellow phase (represented ass 0) is applied if and only if when the phase is going to change. A sample signal plan can is as follows:</p>
-        <pre><code>intersection_1_1  intersection_1_2
-        <span class="hljs-number">1</span>  <span class="hljs-number">2</span>
-        <span class="hljs-number">1</span>  <span class="hljs-number">2</span>
-        <span class="hljs-number">0</span>  <span class="hljs-number">2</span>
-        <span class="hljs-number">0</span>  <span class="hljs-number">0</span>
-        <span class="hljs-number">0</span>  <span class="hljs-number">0</span>
-        <span class="hljs-number">0</span>  <span class="hljs-number">0</span>
-        <span class="hljs-number">0</span>  <span class="hljs-number">0</span>
-        <span class="hljs-number">2</span>  <span class="hljs-number">0</span>
-        ...
-        </code></pre><p>The follwing code segment in &#39;run_signal_plan.py&#39; illustrates how to run a pre-defined signal plan from file. The &#39;rlTrafficLight&#39; must be set &quot;True&quot; to ignore the default signal plan.  </p>
-        <pre><code class="lang-python">eng = engine.Engine(sim_setting_control[<span class="hljs-string">"interval"</span>],
-                        sim_setting_control[<span class="hljs-string">"threadNum"</span>],
-                        sim_setting_control[<span class="hljs-string">"saveReplay"</span>],
-                        sim_setting_control[<span class="hljs-string">"rlTrafficLight"</span>],
-                        sim_setting_control[<span class="hljs-string">"changeLane"</span>])
-        roadnetFile = <span class="hljs-string">"data/{}/roadnet.json"</span>.<span class="hljs-keyword">format</span>(<span class="hljs-keyword">args</span>.scenario)
-        flowFile = <span class="hljs-string">"data/{}/flow.json"</span>.<span class="hljs-keyword">format</span>(<span class="hljs-keyword">args</span>.scenario)
-        planFile = <span class="hljs-string">"data/{}/signal_plan_{}.txt"</span>.<span class="hljs-keyword">format</span>(<span class="hljs-keyword">args</span>.scenario, <span class="hljs-keyword">args</span>.scenario)
-        eng = engine.Engine(sim_setting_control[<span class="hljs-string">"interval"</span>],
-                        sim_setting_control[<span class="hljs-string">"threadNum"</span>],
-                        sim_setting_control[<span class="hljs-string">"saveReplay"</span>],
-                        sim_setting_control[<span class="hljs-string">"rlTrafficLight"</span>],
-                        sim_setting_control[<span class="hljs-string">"changeLane"</span>])
-        roadnetFile = <span class="hljs-string">"data/{}/roadnet.json"</span>.<span class="hljs-keyword">format</span>(<span class="hljs-keyword">args</span>.scenario)
-        flowFile = <span class="hljs-string">"data/{}/flow.json"</span>.<span class="hljs-keyword">format</span>(<span class="hljs-keyword">args</span>.scenario)
-        planFile = <span class="hljs-string">"data/{}/signal_plan.txt"</span>.<span class="hljs-keyword">format</span>(<span class="hljs-keyword">args</span>.scenario)
-        eng.load_roadnet(roadnetFile)
-        eng.load_flow(flowFile)
-        plan = pd.read_csv(planFile, sep=<span class="hljs-string">"\t"</span>, header=0, dtype=int)
-        intersection_id = plan.columns[0]
-        <span class="hljs-keyword">for</span> step <span class="hljs-keyword">in</span> <span class="hljs-keyword">range</span>(num_step):
-            phase = plan.<span class="hljs-keyword">loc</span>[step]
-            eng.set_tl_phase(intersection_id, phase) 
-            eng.next_step()
-            eng.get_...()
-            ...
+        <pre><code>
+intersection_1_1  intersection_1_2
+1  2
+1  2
+0  2
+0  0
+0  0
+0  0
+0  0
+2  0
+...
+        </code></pre>
+        <p>The follwing code segment in &#39;run_signal_plan.py&#39; illustrates how to run a pre-defined signal plan from file. The &#39;rlTrafficLight&#39; must be set &quot;True&quot; to ignore the default signal plan.  </p>
+        <pre><code class="lang-python">
+eng = engine.Engine(sim_setting_control["interval"],
+                    sim_setting_control["threadNum"],
+                    sim_setting_control["saveReplay"],
+                    sim_setting_control["rlTrafficLight"],
+                    sim_setting_control["changeLane"])
+roadnetFile = "data/{}/roadnet.json".format(args.scenario)
+flowFile = "data/{}/flow.json".format(args.scenario)
+planFile = "data/{}/signal_plan_{}.txt".format(args.scenario, args.scenario)
+eng = engine.Engine(sim_setting_control["interval"],
+                    sim_setting_control["threadNum"],
+                    sim_setting_control["saveReplay"],
+                    sim_setting_control["rlTrafficLight"],
+                    sim_setting_control["changeLane"])
+roadnetFile = "data/{}/roadnet.json".format(args.scenario)
+flowFile = "data/{}/flow.json".format(args.scenario)
+planFile = "data/{}/signal_plan.txt".format(args.scenario)
+eng.load_roadnet(roadnetFile)
+eng.load_flow(flowFile)
+plan = pd.read_csv(planFile, sep="\t", header=0, dtype=int)
+intersection_id = plan.columns[0]
+for step in range(num_step):
+    phase = plan.loc[step]
+    eng.set_tl_phase(intersection_id, phase) 
+    eng.next_step()
+    eng.get_...()
+    ...
         </code></pre>
 
 
         <h3 id="5-evaluation">5  Evaluation</h3>
         <p>You can run the following command with a specific scenario to get the evaluation result. The &#39;num_step&#39;, 3600 by default, determines the evaluation time and need be identical to the running time of the signal plan.</p>
-        <pre><code class="lang-bash"><span class="hljs-string">python3 </span><span class="hljs-string">evaluate.</span><span class="hljs-string">py </span><span class="hljs-built_in">--scenario</span> <span class="hljs-string">"hangzhou_bc_tyc_1h_7_8_1848"</span> <span class="hljs-built_in">--num_step</span> <span class="hljs-string">3600</span>
+        <pre><code class="lang-bash">
+python3 evaluate.py --scenario "hangzhou_bc_tyc_1h_7_8_1848" --num_step 3600
         </code></pre>
         <p>evaluate.py takes the signal plan as the input and outputs a score for the proposed method. </p>
-        <pre><code class="lang-python"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>:
-        args = parse_arguments()
-        sim_setting = sim_setting_control
-        sim_setting[<span class="hljs-string">"num_step"</span>] = args.num_step
-        evaluate_one_traffic(sim_setting, args.scenario)
+        <pre><code class="lang-python">
+def main():
+    args = parse_arguments()
+    sim_setting = sim_setting_control
+    sim_setting["num_step"] = args.num_step
+    evaluate_one_traffic(sim_setting, args.scenario)
         </code></pre>
 
         <h3 id="next">Next</h3>
