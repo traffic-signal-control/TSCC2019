@@ -117,7 +117,7 @@
 docker pull tscc2050/competition
 docker tag tscc2050/competition competition
         </code></pre>
-        
+
         <p>Alternatively, you can download the image from <a href="https://drive.google.com/file/d/1A9Q4Mj2GS6vhizKWHS0DKZkiXeBnn5_9/view?usp=sharing）">Google Drive</a> or 
         <a href="https://pan.baidu.com/s/1DZkO_rtsWm0hvs4y8y55qw）">Baidu Yun</a> and load this image by:</p>
         <pre><code class="lang-bash">
@@ -173,16 +173,16 @@ python3 run_signal_plan.py --scenario "hangzhou_bc_tyc_1h_7_8_1848"
         </code></pre>
         <p>&quot;hangzhou_bc_tyc_1h_7_8_1848&quot; is a folder name, which includes three files: road network file, traffic flow file, and a traffic signal plan.</p>
         <p>In the signal plan file, the first row is a header indicating the intersection name, seperated by &#39;\t&#39;. Following that, each line is one second, and each column is the selected phase for that corresponding intersection. A special phase number 0 indicating yellow light when switching from one phase to another. a mandatory 5-second yellow phase (represented ass 0) is applied if and only if when the phase is going to change. A sample signal plan can is as follows:</p>
-        <pre><code>
-intersection_1_1  intersection_1_2
-1  2
-1  2
-0  2
-0  0
-0  0
-0  0
-0  0
-2  0
+        <pre><code class="lang-python">
+intersection_1_1    intersection_1_2
+1   2
+1   2
+0   2
+0   0
+0   0
+0   0
+0   0
+2   0
 ...
         </code></pre>
         <p>The follwing code segment in &#39;run_signal_plan.py&#39; illustrates how to run a pre-defined signal plan from file. The &#39;rlTrafficLight&#39; must be set &quot;True&quot; to ignore the default signal plan.  </p>
