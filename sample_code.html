@@ -97,8 +97,7 @@
     <div class="site-section bg-light">
       <div class="container" align="left">
 
-        <p>Here we provide a sample code to illustrate how to generate a traffic signal plan through interacting with the simulator. 
-        The sample code is here: <a href="https://github.com/tianrang-intelligence/TSCC2019">https://github.com/tianrang-intelligence/TSCC2019</a>
+        <p>Here we provide a <a href="https://github.com/traffic-signal-control/sample-code">sample code</a> to illustrate how to generate a traffic signal plan through interacting with the simulator. 
         In the sample code, we implement two baseline methods: Self-organizing traffic light (SOTL) and reinforcement learning. </p>
 
           <p>You can run SOTL using the following command:</p>
@@ -134,7 +133,7 @@
 
         <h3 id="2-read-traffic-environment-from-simulator">2 Read traffic environment from simulator</h3>
 
-          <p>In the <a href="https://github.com/zxsRambo/competition/blob/master/cityflow_env.py">cityflow_env.py</a>, a class of the cityflow environment is provided. There is a function to get the state features of the environment.</p>
+          <p>In the <a href="https://github.com/traffic-signal-control/sample-code/blob/master/cityflow_env.py">cityflow_env.py</a>, a class of the cityflow environment is provided. There is a function to get the state features of the environment.</p>
 
           <pre><code class="lang-python">def get_state(<span class="hljs-literal">self</span>):
               <span class="hljs-keyword">state</span> = {
@@ -157,7 +156,7 @@
 
           <h3 id="3-calculate-traffic-signal-plans">3 Calculate traffic signal plans</h3>
 
-          <p>As mentioned above, for a control algorithm, the mapping from lanes to a phase is crucial. We obtain the mapping by the function <strong><em>parse_roadnet(roadnetfile)</em></strong> in the <a href="https://github.com/zxsRambo/competition/blob/master/utility.py">utility.py</a>.</p>
+          <p>As mentioned above, for a control algorithm, the mapping from lanes to a phase is crucial. We obtain the mapping by the function <strong><em>parse_roadnet(roadnetfile)</em></strong> in the <a href="https://github.com/traffic-signal-control/sample-code/blob/master/utility.py">utility.py</a>.</p>
 
           <p>The first step is to read the roadnet json file into a dictionary with the intersection_id as the key and the details of this intersection as the value.</p>
 
@@ -256,7 +255,7 @@
 
           <h4 id="3-2-reinforcement-learning-method">3.2 Reinforcement learning method</h4>
 
-          <p>Apart from SOTL, a simple deep q-learning algorithm (<a href="https://github.com/zxsRambo/competition/blob/master/run_rl.py">run_rl.py</a>) is also provided to calculate traffic signal plan. In this sample code, there are following definitions.</p>
+          <p>Apart from SOTL, a simple deep q-learning algorithm (<a href="https://github.com/traffic-signal-control/sample-code/blob/master/run_rl.py">run_rl.py</a>) is also provided to calculate traffic signal plan. In this sample code, there are following definitions.</p>
           <ul>
           <li>state: number of vehicles on the starting lane, current phase </li>
           <li>reward:  the total number of waiting vehicles on the starting lane</li>
