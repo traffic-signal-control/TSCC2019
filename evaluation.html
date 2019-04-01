@@ -2,6 +2,12 @@
 <html lang="en">
   <head>
     <title>TSCC 2019 &mdash; Traffic Signal Control Competition 2019</title>
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+    </script>
+    <script type="text/javascript"
+      src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
@@ -97,25 +103,25 @@
     <div class="site-section bg-light">
       <div class="container" align="left">
 
-        <h3 id="evalutation-metric-average-travel-time-">Evalutation metric: average travel time</h3>
-        <p>For those vehicles which complete the trip from the starting road to the ending road, we define the timestamp it reaches the destination (enter the last road segment) as t_e. Then the travel time is defined as the time difference between its starting time t_s and ending time t_e and it is calculated by:</p>
-        <div align="center"><img width="150" height="30" src="images/travel_time.png"/></div>
+        <h3 id="evalutation-metric-average-travel-time-">Evalutation Metric: Average Travel Time</h3>
+        <p>For those vehicles which complete the trip from the starting road to the ending road, we define the timestamp it reaches the destination (enter the last road segment) as $t_e$. Then the travel time is defined as the time difference between its starting time $t_s$ and ending time $t_e$ and it is calculated by:</p>
+        <font size="5">$$ \tau = t_e - t_s $$</font>
 
-        <p>As for the rest of the vehicles which have not reached the destination when the system time is over at timestamp T_max, their travel time is calculated as:</p>
-        <div align="center"><img width="150" height="30" src="images/tt_extra.png"/></div>
+        <p>As for the rest of the vehicles which have not reached the destination when the system time is over at timestamp $T_{max}$, their travel time is calculated as:</p>
+        <font size="5">$$ \tau = T_{max} - t_s $$</font>
 
-        <p>Then for one test scenario, the metric <strong>Travel Time</strong> is calculated as the average travel time of all vehicles:</p>
-        <div align="center"><img width="160" height="50" src="images/att.png"/></div>
+        <p>Then for one test scenario, the metric <strong>Travel Time</strong> is calculated as the average travel time of all vehicles where $n$ is the number of vehicles.:</p>
+        <font size="5">$$ T = \sum_i\tau_i/n $$</font>
 
-        <p>where n is the number of vehicles.</p>
-        <p>Obviously, the objective of this problem is to seek a better signal timing plan to minimize the average travel time T.</p>
+        
+        <p>Obviously, the objective of this problem is to seek a better signal timing plan to minimize the average travel time $T$.</p>
 
         <h3 id="overall-score">Overall Score</h3>
-        <p>For each test scenario i, we have a baseline travel time b_i, then the score of the ith scenario is computed as the <strong>relative improvement over the baseline results</strong>:
-        <img src="images/score.png"></p>
+        <p>For each test scenario $i$, we have a baseline travel time $b_i$, then the score of the i-th scenario is computed as the <strong>relative improvement over the baseline results</strong>:
+        <font size="5">$$ score_i = \frac{b_i-T_i}{b_i} $$</font>
         <p>The baseline result is based on the result from SOTL algorithm, which is provided in the sample code. </p>
-        <p>For n different scenarios, the overall score is:
-        <img src="images/overall_score.png"></p>
+        <p>For $n$ different scenarios, the overall score is:
+        <font size="5">$$ overall\ score = \sum_i score_i/n $$</font>
 
         <h3 id="references">References</h2>
         <ol>
