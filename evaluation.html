@@ -99,23 +99,23 @@
 
         <h3 id="evalutation-metric-average-travel-time-">Evalutation metric: average travel time</h3>
         <p>For those vehicles which complete the trip from the starting road to the ending road, we define the timestamp it reaches the destination (enter the last road segment) as t_e. Then the travel time is defined as the time difference between its starting time t_s and ending time t_e and it is calculated by:</p>
-        <div align="center"><img width="150" height="30" src="https://uploader.shimo.im/f/WvuJ2Yv3s7QoKWhZ.png!thumbnail"/></div>
+        <div align="center"><img width="150" height="30" src="images/travel_time.png"/></div>
 
         <p>As for the rest of the vehicles which have not reached the destination when the system time is over at timestamp T_max, their travel time is calculated as:</p>
-        <div align="center"><img width="150" height="30" src="https://uploader.shimo.im/f/sWsGoqQCPoQVvanH.png!thumbnail"/></div>
+        <div align="center"><img width="150" height="30" src="images/tt_extra.png"/></div>
 
         <p>Then for one test scenario, the metric <strong>Travel Time</strong> is calculated as the average travel time of all vehicles:</p>
-        <div align="center"><img width="160" height="50" src="https://uploader.shimo.im/f/C6ACttroHmMaYLgb.png!thumbnail"/></div>
+        <div align="center"><img width="160" height="50" src="images/att.png"/></div>
 
         <p>where n is the number of vehicles.</p>
         <p>Obviously, the objective of this problem is to seek a better signal timing plan to minimize the average travel time T.</p>
 
         <h3 id="overall-score">Overall Score</h3>
         <p>For each test scenario i, we have a baseline travel time b_i, then the score of the ith scenario is computed as the <strong>relative improvement over the baseline results</strong>:
-        <img src="https://uploader.shimo.im/f/W3EE3j5KBDULyr2u.png!thumbnail" alt="å›¾ç‰‡"></p>
+        <img src="images/score.png"></p>
         <p>The baseline result is based on the result from SOTL algorithm, which is provided in the sample code. </p>
         <p>For n different scenarios, the overall score is:
-        <img src="https://uploader.shimo.im/f/yEehUkng6XIpLnaR.png!thumbnail" alt="å›¾ç‰‡"></p>
+        <img src="images/overall_score.png"></p>
 
         <h3 id="references">References</h2>
         <ol>
